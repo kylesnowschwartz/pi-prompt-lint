@@ -222,3 +222,21 @@ test("new cross-phase array before an existing captured handler is still unattri
     assert.ok(f.events.some((e) => e.phase === "unattributed" && e.after?.prompt === "HEAD GAP"));
   } finally { f.handle?.dispose(); }
 });
+
+test("runner option patches only the given ExtensionRunner class; the default patches the imported one", () => {
+  class OtherRunner {}
+  Object.defineProperties(OtherRunner.prototype, Object.getOwnPropertyDescriptors(ExtensionRunner.prototype));
+  const imported = ExtensionRunner.prototype.emitBeforeAgentStart, other = (OtherRunner.prototype as any).emitBeforeAgentStart;
+  const marker = () => () => {};
+  const given = installObserver({ version: "1.5.2", registerMarker: marker, listener: () => {}, runner: OtherRunner as unknown as typeof ExtensionRunner });
+  assert.equal(given.installed, true);
+  assert.notEqual((OtherRunner.prototype as any).emitBeforeAgentStart, other);
+  assert.equal(ExtensionRunner.prototype.emitBeforeAgentStart, imported);
+  given.dispose();
+  assert.equal((OtherRunner.prototype as any).emitBeforeAgentStart, other);
+  const fallback = installObserver({ version: "1.5.2", registerMarker: marker, listener: () => {} });
+  assert.equal(fallback.installed, true);
+  assert.notEqual(ExtensionRunner.prototype.emitBeforeAgentStart, imported);
+  fallback.dispose();
+  assert.equal(ExtensionRunner.prototype.emitBeforeAgentStart, imported);
+});

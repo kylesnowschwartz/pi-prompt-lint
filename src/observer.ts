@@ -31,6 +31,11 @@ export interface ObserverOptions {
   /** Pass handler => pi.on("before_agent_start", handler). Pi wraps handler identity. */
   registerMarker: (handler: () => void) => (() => void);
   listener: (event: ObserverEvent) => void;
+  /**
+   * The ExtensionRunner class to patch: the one the running pi uses. Defaults to the class this
+   * module imports, which differs when the host loads pi through a module mapper.
+   */
+  runner?: typeof ExtensionRunner;
 }
 export interface ObserverHandle { installed: boolean; dispose(): void }
 
@@ -113,7 +118,7 @@ function deliver(sub: Subscription, event: ObserverEvent) {
 
 /** Unsupported internal bridge, deliberately pinned to Pi 1.5.2. Dispose on session_shutdown. */
 export function installObserver(options: ObserverOptions): ObserverHandle {
-  const proto = ExtensionRunner.prototype as any;
+  const proto = (options.runner ?? ExtensionRunner).prototype as any;
   const sub: Subscription = { ...options, active: true };
   const fail = (warning: string): ObserverHandle => {
     deliver(sub, { stage: "before_agent_start", phase: "warning", label: "compiled prompt", warning });
