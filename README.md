@@ -22,7 +22,14 @@ As a development dependency of an extension, for tests:
 npm install --save-dev github:kylesnowschwartz/pi-prompt-lint @earendil-works/pi-coding-agent@1.5.2 @earendil-works/pi-ai@1.5.2
 ```
 
-npm builds `dist/` with the package's `prepare` script while it installs from Git. pnpm runs that script only for packages it allows to build: add `pi-prompt-lint` to `onlyBuiltDependencies` in `pnpm-workspace.yaml` (or `package.json` `pnpm.onlyBuiltDependencies`), or approve it with `pnpm approve-builds`. The pi packages are optional peer dependencies, so the extension's own development dependencies provide them.
+npm builds `dist/` with the package's `prepare` script while it installs from Git. pnpm stops the install until the project allows that script; add this to the project's `pnpm-workspace.yaml`:
+
+```yaml
+onlyBuiltDependencies:
+  - "pi-prompt-lint"
+```
+
+The pi packages are optional peer dependencies, so the extension's own development dependencies provide them.
 
 ## Command line
 
