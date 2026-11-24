@@ -1,0 +1,11 @@
+node_modules/
+.pi/
+coverage/
+.env
+.env.*
+*.pem
+*.key
+*-key.json
+.DS_Store
+dist/
+*.tgz

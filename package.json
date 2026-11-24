@@ -1,0 +1,71 @@
+{
+  "name": "pi-prompt-lint",
+  "version": "0.1.0",
+  "description": "Lint the prompt text a pi coding agent extension sends to the model, offline",
+  "type": "module",
+  "license": "MIT",
+  "author": "kylesnowschwartz",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kylesnowschwartz/pi-prompt-lint.git"
+  },
+  "keywords": [
+    "pi",
+    "pi-coding-agent",
+    "pi-extension",
+    "lint",
+    "prompt",
+    "system-prompt"
+  ],
+  "bin": {
+    "pi-prompt-lint": "./dist/lint/cli.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/lint/index.d.ts",
+      "default": "./dist/lint/index.js"
+    },
+    "./observer": {
+      "types": "./dist/observer.d.ts",
+      "default": "./dist/observer.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
+    "test": "node --experimental-strip-types --test test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src test",
+    "check": "npm run typecheck && npm run lint && npm test"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-ai": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    },
+    "@earendil-works/pi-ai": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.5.2",
+    "@earendil-works/pi-ai": "1.5.2",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3",
+    "eslint": "^9.39.0",
+    "typescript-eslint": "^8.48.0"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  }
+}
